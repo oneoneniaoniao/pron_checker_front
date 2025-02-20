@@ -1,9 +1,8 @@
-//// filepath: /Users/komorimariko/Desktop/pron_checker_front/src/pages/Game.tsx
 import { useState, useEffect } from 'react';
 import { Container } from '@mui/material';
 import Loading from '../components/Loading';
 import QuestionDisplay from '../components/QuestionDisplay';
-import GameOverScreen from '../components/GameOverScreen';
+import GameOverScreen from '../components/GameOverDisplay';
 
 interface QuestionData {
   words: string[];
@@ -18,7 +17,7 @@ export default function Game() {
 
   const API_URL = import.meta.env.DEV ? 'http://localhost:3001/word/random' : '/sample.json';
 
-  useEffect(() => {
+  const fetchQuestion = () => {
     fetch(API_URL)
       .then((res) => res.json())
       .then((data: QuestionData) => {
@@ -28,13 +27,18 @@ export default function Game() {
       .catch((err) => {
         console.error('Error fetching question:', err);
       });
+  };
+
+  useEffect(() => {
+    fetchQuestion();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [API_URL]);
 
   const handleAnswer = (selectedIndex: number) => {
     if (!question) return;
     if (selectedIndex === question.correctIndex) {
       setScore((prev) => prev + 1);
-      // 次の問題を取得する処理追加
+      fetchQuestion();
     } else {
       setGameOver(true);
     }
