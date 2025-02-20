@@ -1,6 +1,9 @@
+//// filepath: /Users/komorimariko/Desktop/pron_checker_front/src/pages/Game.tsx
 import { useState, useEffect } from 'react';
-import { Container, Typography, Button, Box } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Container } from '@mui/material';
+import Loading from '../components/Loading';
+import QuestionDisplay from '../components/QuestionDisplay';
+import GameOverScreen from '../components/GameOverScreen';
 
 interface QuestionData {
   words: string[];
@@ -9,16 +12,14 @@ interface QuestionData {
 }
 
 export default function Game() {
-  const navigate = useNavigate();
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [question, setQuestion] = useState<QuestionData | null>(null);
 
-  const apiUrl = import.meta.env.DEV ? 'http://localhost:3001/word/random' : '/sample.json';
-  const audioUrlBase = import.meta.env.DEV ? 'http://localhost:3001' : '';
+  const API_URL = import.meta.env.DEV ? 'http://localhost:3001/word/random' : '/sample.json';
 
   useEffect(() => {
-    fetch(apiUrl)
+    fetch(API_URL)
       .then((res) => res.json())
       .then((data: QuestionData) => {
         setQuestion(data);
@@ -27,50 +28,28 @@ export default function Game() {
       .catch((err) => {
         console.error('Error fetching question:', err);
       });
-  }, [apiUrl]);
+  }, [API_URL]);
 
   const handleAnswer = (selectedIndex: number) => {
     if (!question) return;
     if (selectedIndex === question.correctIndex) {
       setScore((prev) => prev + 1);
-      // 次の問題を取得する処理を追加する場合はここに記述
+      // 次の問題を取得する処理追加
     } else {
       setGameOver(true);
     }
   };
 
   if (!question) {
-    return (
-      <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 10 }}>
-        <Typography variant="h5">Loading...</Typography>
-      </Container>
-    );
+    return <Loading />;
   }
 
   return (
     <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 10 }}>
       {gameOver ? (
-        <>
-          <Typography variant="h4" color="error">
-            Game Over!
-          </Typography>
-          <Typography variant="h6">Score: {score}</Typography>
-          <Button variant="contained" color="primary" size="large" sx={{ mt: 2 }} onClick={() => navigate('/game')}>
-            Restart
-          </Button>
-        </>
+        <GameOverScreen score={score} />
       ) : (
-        <>
-          <audio controls src={audioUrlBase + '/' + question.audioUrl}></audio>
-          <Box sx={{ mt: 2 }}>
-            {question.words.map((word, index) => (
-              <Button key={index} variant="contained" sx={{ m: 1 }} onClick={() => handleAnswer(index)}>
-                {word}
-              </Button>
-            ))}
-          </Box>
-          <Typography variant="h6">Score: {score}</Typography>
-        </>
+        <QuestionDisplay audioUrl={question.audioUrl} words={question.words} score={score} onAnswer={handleAnswer} />
       )}
     </Container>
   );
