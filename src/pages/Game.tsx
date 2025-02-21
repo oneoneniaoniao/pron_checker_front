@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Container } from '@mui/material';
-import Loading from '../components/Loading';
-import QuestionDisplay from '../components/QuestionDisplay';
-import GameOverScreen from '../components/GameOverDisplay';
+import Loading from '@/components/Loading';
+import QuestionDisplay from '@/components/QuestionDisplay';
+import GameOverScreen from '@/components/GameOverDisplay';
 
 interface QuestionData {
   words: string[];
