@@ -2,7 +2,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 
-import Game from '@/pages/Game';
+import Home from '@/pages/Home';
 
 const mockQuestion = {
   words: ['correct', 'wrong'],
@@ -22,9 +22,9 @@ afterEach(() => {
   vi.restoreAllMocks();
 });
 
-describe('Game', () => {
+describe('Home', () => {
   it('shows Game Over when wrong answer is clicked', async () => {
-    render(<Game />);
+    render(<Home />);
     await waitFor(() => screen.getByRole('button', { name: /wrong/i }));
     const wrongButton = screen.getByRole('button', { name: /wrong/i });
     fireEvent.click(wrongButton);
@@ -34,7 +34,7 @@ describe('Game', () => {
   });
 
   it('increments score and loads next question when correct answer is clicked', async () => {
-    render(<Game />);
+    render(<Home />);
     await waitFor(() => screen.getByRole('button', { name: /correct/i }));
     const correctButton = screen.getByRole('button', { name: /correct/i });
     fireEvent.click(correctButton);

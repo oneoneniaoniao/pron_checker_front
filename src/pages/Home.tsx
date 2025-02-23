@@ -11,7 +11,7 @@ interface QuestionData {
   correctIndex: number;
 }
 
-export default function Game() {
+export default function Home() {
   const [score, setScore] = useState(0);
   const [gameOver, setGameOver] = useState(false);
   const [question, setQuestion] = useState<QuestionData | null>(null);
@@ -19,6 +19,7 @@ export default function Game() {
   const API_URL = import.meta.env.DEV ? 'http://localhost:3001/word/random' : '/sample.json';
 
   const fetchQuestion = () => {
+    // setQuestion({ words: ['apple', 'banana'], audioUrl: 'test-audio.mp3', correctIndex: 0 });
     fetch(API_URL)
       .then((res) => res.json())
       .then((data: QuestionData) => {
@@ -50,12 +51,20 @@ export default function Game() {
   }
 
   return (
-    <Container maxWidth="sm" sx={{ textAlign: 'center', mt: 10 }}>
-      {gameOver ? (
-        <GameOverScreen score={score} />
-      ) : (
-        <QuestionDisplay audioUrl={question.audioUrl} words={question.words} score={score} onAnswer={handleAnswer} />
-      )}
-    </Container>
+    <>
+      <Container
+        id="game-container"
+        sx={{
+          height: '100vh',
+          width: '100vw',
+        }}
+      >
+        {gameOver ? (
+          <GameOverScreen score={score} />
+        ) : (
+          <QuestionDisplay audioUrl={question.audioUrl} words={question.words} score={score} onAnswer={handleAnswer} />
+        )}
+      </Container>
+    </>
   );
 }
