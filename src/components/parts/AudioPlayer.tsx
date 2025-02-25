@@ -55,7 +55,7 @@ const AudioPlayer = ({ audioUrl }: AudioPlayerProps): JSX.Element => {
         height: 80,
         borderRadius: '50%',
         bgcolor: isPlaying ? 'success.main' : 'primary.main',
-        boxShadow: '1px 3px 2px 0px rgba(0, 0, 0, 0.4)',
+        boxShadow: '1px 3px 2px -1px rgba(0, 0, 0, 0.4)',
       }}
     >
       <IconButton onClick={handlePlayClick} sx={{ fontSize: '4rem' }}>
