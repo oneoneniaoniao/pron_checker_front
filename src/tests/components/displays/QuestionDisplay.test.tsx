@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
-import QuestionDisplay from '@/components/QuestionDisplay';
+import QuestionDisplay from '@/components/displays/QuestionDisplay';
 
 describe('QuestionDisplay', () => {
   const props = {

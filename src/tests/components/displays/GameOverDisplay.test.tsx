@@ -2,7 +2,7 @@ import React from 'react';
 import { render, screen, fireEvent } from '@testing-library/react';
 import { describe, it, expect, vi } from 'vitest';
 
-import GameOverScreen from '@/components/GameOverDisplay';
+import GameOverScreen from '@/components/displays/GameOverDisplay';
 
 describe('GameOverScreen', () => {
   let originalReload: () => void;
