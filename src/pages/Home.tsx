@@ -11,71 +11,75 @@ interface QuestionData {
   correctIndex: number;
 }
 
-export default function Home(): JSX.Element {
-  const [score, setScore] = useState<number>(0);
-  const [gameOver, setGameOver] = useState<boolean>(false);
+export default function Home() {
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
   const [question, setQuestion] = useState<QuestionData | null>(null);
-  const [error, setError] = useState<string | null>(null);
 
   const API_URL = import.meta.env.DEV ? 'http://localhost:3001/word/random' : '/sample.json';
 
-  const fetchQuestion = async (): Promise<void> => {
-    try {
-      const res = await fetch(API_URL);
-      const data: QuestionData = await res.json();
-      setQuestion(data);
-    } catch (err) {
-      setError('Error fetching question');
-      console.error('Error fetching question:', err);
-    }
+  const fetchQuestion = () => {
+    // setQuestion({ words: ['apple', 'banana'], audioUrl: 'test-audio.mp3', correctIndex: 0 });
+    fetch(API_URL)
+      .then((res) => res.json())
+      .then((data: QuestionData) => {
+        setQuestion(data);
+        console.log(data);
+      })
+      .catch((err) => {
+        console.error('Error fetching question:', err);
+      });
   };
 
   useEffect(() => {
     fetchQuestion();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [API_URL]);
 
-  const handleAnswer = (selectedIndex: number): void => {
+  const handleAnswer = (selectedIndex: number) => {
     if (!question) return;
     if (selectedIndex === question.correctIndex) {
-      setScore((prev: number) => prev + 1);
+      setScore((prev) => prev + 1);
       fetchQuestion();
     } else {
       setGameOver(true);
     }
   };
 
-  const containerStyle = {
-    height: '100vh',
-    width: '100vw',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  };
-
-  if (error) {
-    return (
-      <Container sx={containerStyle}>
-        <p>{error}</p>
-      </Container>
-    );
-  }
-
   if (!question) {
     return (
-      <Container sx={containerStyle}>
+      <Container
+        sx={{
+          height: '100vh',
+          width: '100vw',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
         <Loading />
       </Container>
     );
   }
 
   return (
-    <Container id="game-container" sx={containerStyle}>
-      {gameOver ? (
-        <GameOverScreen score={score} />
-      ) : (
-        <QuestionDisplay audioUrl={question.audioUrl} words={question.words} score={score} onAnswer={handleAnswer} />
-      )}
-    </Container>
+    <>
+      <Container
+        id="game-container"
+        sx={{
+          height: '100vh',
+          width: '100vw',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+        }}
+      >
+        {gameOver ? (
+          <GameOverScreen score={score} />
+        ) : (
+          <QuestionDisplay audioUrl={question.audioUrl} words={question.words} score={score} onAnswer={handleAnswer} />
+        )}
+      </Container>
+    </>
   );
 }
